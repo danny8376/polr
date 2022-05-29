@@ -16,6 +16,7 @@
         "nesbot/carbon": "^1.22",
         "doctrine/dbal": "2.5.11",
         "google/recaptcha": "~1.1",
+        "jumbojett/openid-connect-php": "^0.9.0",
         "symfony/http-foundation": "2.7.51"
     },
     "require-dev": {
@@ -37,6 +38,9 @@
         ]
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
     }
 }

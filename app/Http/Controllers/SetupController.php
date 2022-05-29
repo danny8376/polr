@@ -136,6 +136,11 @@ class SetupController extends Controller {
         $mail_from = $request->input('app:smtp_from');
         $mail_from_name = $request->input('app:smtp_from_name');
 
+        $openid_connect_url = $request->input('settings:openid_connect_url');
+        $openid_connect_configuration = $request->input('settings:openid_connect_configuration');
+        $openid_connect_client_id = $request->input('settings:openid_connect_client_id');
+        $openid_connect_client_secret = $request->input('settings:openid_connect_client_secret');
+
         if ($mail_host) {
             $mail_enabled = true;
         }
@@ -179,6 +184,11 @@ class SetupController extends Controller {
             'MAIL_PASSWORD' => $mail_password,
             'MAIL_FROM_ADDRESS' => $mail_from,
             'MAIL_FROM_NAME' => $mail_from_name,
+
+            'OPENID_CONNECT_URL' => $openid_connect_url,
+            'OPENID_CONNECT_CONFIGURATION' => $openid_connect_configuration,
+            'OPENID_CONNECT_CLIENT_ID' => $openid_connect_client_id,
+            'OPENID_CONNECT_CLIENT_SECRET' => $openid_connect_client_secret,
 
             'ST_BASE' => $st_base,
             'ST_AUTO_API' => $st_auto_api_key,

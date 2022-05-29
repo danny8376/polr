@@ -13,7 +13,7 @@
         </div>
 
         <ul id="navbar" class="nav navbar-collapse collapse navbar-nav" id="nbc">
-		    <li><a href="{{ route('about') }}">About</a></li>
+            <li><a href="{{ route('about') }}">About</a></li>
 
             @if (empty(session('username')))
                 <li class="visible-xs"><a href="{{ route('login') }}">Sign In</a></li>
@@ -39,12 +39,23 @@
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
                     <div class="dropdown-menu pull-right login-dropdown-menu" id="dropdown">
                         <h2>Login</h2>
-                        <form action="login" method="POST" accept-charset="UTF-8">
-                            <input type="text" name="username" placeholder='Username' size="30" class="form-control login-form-field" />
-                            <input type="password" name="password" placeholder='Password' size="30" class="form-control login-form-field" />
-                            <input type="hidden" name='_token' value='{{csrf_token()}}' />
-                            <input class="btn btn-success form-control login-form-submit" type="submit" name="login" value="Sign In" />
-                        </form>
+
+                        @if (env('OPENID_CONNECT_CONFIGURATION') && env('OPENID_CONNECT_CONFIGURATION') != 'none')
+                            <a href="/login/openid" class="btn btn-primary">{{ env('OPENID_CONNECT_LOGIN_CAPTION') ?: 'Authenticate with OpenID Connect' }}</a>
+                        @endif
+
+                        @if (env('OPENID_CONNECT_CONFIGURATION') && env('OPENID_CONNECT_CONFIGURATION') == 'allow')
+                            <hr />
+                        @endif
+
+                        @if (env('OPENID_CONNECT_CONFIGURATION') && env('OPENID_CONNECT_CONFIGURATION') != 'always')
+                            <form action="login" method="POST" accept-charset="UTF-8">
+                                <input type="text" name="username" placeholder='Username' size="30" class="form-control login-form-field" />
+                                <input type="password" name="password" placeholder='Password' size="30" class="form-control login-form-field" />
+                                <input type="hidden" name='_token' value='{{csrf_token()}}' />
+                                <input class="btn btn-success form-control login-form-submit" type="submit" name="login" value="Sign In" />
+                            </form>
+                        @endif
                     </div>
                 </li>
             @else
