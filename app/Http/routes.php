@@ -14,7 +14,7 @@ if (env('POLR_ALLOW_ACCT_CREATION')) {
 
 /* GET endpoints */
 
-$app->get('/genlink', ['as' => 'index', 'uses' => 'IndexController@showIndexPage']);
+$app->get('/shorten', ['as' => 'index', 'uses' => 'IndexController@showIndexPage']);
 $app->get('/login/logout', ['as' => 'logout', 'uses' => 'UserController@performLogoutUser']);
 $app->get('/login', ['as' => 'login', 'uses' => 'UserController@displayLoginPage']);
 $app->get('/login/openid', ['as' => 'login', 'uses' => 'UserController@performOpenIDConnect']);
