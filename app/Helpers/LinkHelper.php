@@ -33,6 +33,15 @@ class LinkHelper {
         return false;
     }
 
+    static public function linkBlacklist($link_ending) {
+        $raw_blacklist = env('SHORTLINK_BLACKLIST');
+        if ($raw_blacklist) {
+            return in_array($link_ending, explode(',', $raw_blacklist));
+        } else {
+            return false;
+        }
+    }
+
     static public function linkExists($link_ending) {
         /**
          * Provided a link ending (string),

@@ -74,6 +74,10 @@ class LinkFactory {
             if ($ending_in_use) {
                 throw new \Exception('This URL ending is already in use.');
             }
+            $ending_blacklist = LinkHelper::linkBlacklist($custom_ending);
+            if ($ending_blacklist) {
+                throw new \Exception('This URL ending is unavailable.');
+            }
 
             $link_ending = $custom_ending;
         }
