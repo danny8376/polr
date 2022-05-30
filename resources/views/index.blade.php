@@ -28,7 +28,7 @@
 
         <div>
             <div class='custom-link-text'>
-                <h2 class='site-url-field'>{{env('APP_ADDRESS')}}/{{session('limit_prefix')}}</h2>
+                <h2 class='site-url-field'>{{env('APP_ADDRESS')}}/{{ltrim(session('limit_prefix'), '!')}}</h2>
                 <input type='text' autocomplete="off" class='form-control custom-url-field' name='custom-ending' />
             </div>
             <div>
