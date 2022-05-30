@@ -50,15 +50,12 @@ class UserController extends Controller {
         $info = $client->requestUserInfo();
 
         $username = $info->preferred_username ?: $info->email ?: $info->sub;
-        $email = $info->email;
 
-        if (!$username || !$email) {
-            abort(503, 'OpenID Connect provider did not return the requested mandatory fields username and email.');
+        if (!$username) {
+            abort(503, 'OpenID Connect provider did not return the requested mandatory fields username.');
         }
 
-        if (UserHelper::emailExists($email)) {
-            $user = UserHelper::getUserByEmail($email);
-        } else if (UserHelper::userExists($username)) {
+        if (UserHelper::userExists($username)) {
             // user account already exists
             $user = UserHelper::getUserByUsername($username);
         } else {
@@ -89,6 +86,8 @@ class UserController extends Controller {
 
 
         // great, we have a user!
+
+        $user->email = $info->email;
 
         if (isset($info->group) && env('OPENID_CONNECT_ADMIN_GROUP')) {
             $admin_groups = explode(',', env('OPENID_CONNECT_ADMIN_GROUP'));
