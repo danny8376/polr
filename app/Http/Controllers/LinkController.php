@@ -37,6 +37,11 @@ class LinkController extends Controller {
         $creator = session('username');
         $link_ip = $request->ip();
 
+        $limit_prefix = session('limit_prefix');
+        if (isset($custom_ending) && $custom_ending !== '' && isset($limit_prefix) && $limit_prefix !== '') {
+            $custom_ending = ltrim($limit_prefix, '!') . $custom_ending;
+        }
+
         try {
             $short_url = LinkFactory::createLink($long_url, $is_secret, $custom_ending, $link_ip, $creator);
         }

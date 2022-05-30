@@ -89,32 +89,49 @@ class UserController extends Controller {
 
         $user->email = $info->email;
 
-        $raw_admin_group = env('OPENID_CONNECT_ADMIN_GROUP') ?: '';
-        $raw_limit_user_group = env('OPENID_CONNECT_LIMIT_USER_GROUP') ?: '';
+        if (isset($info->group)) {
+            $raw_admin_group = env('OPENID_CONNECT_ADMIN_GROUP') ?: '';
+            $raw_limit_user_group = env('OPENID_CONNECT_LIMIT_USER_GROUP') ?: '';
 
-        if (isset($info->group) && ($raw_admin_group || $raw_limit_user_group)) {
-            $admin_groups = explode(',', $raw_admin_group);
+            if ($raw_admin_group || $raw_limit_user_group) {
+                $admin_groups = explode(',', $raw_admin_group);
+                if (empty(array_intersect($info->group, $admin_groups))) {
 
-            if (empty(array_intersect($info->group, $admin_groups))) {
+                    if ($raw_limit_user_group) {
+                        $limit_user_groups = array_merge($admin_groups, explode(',', $raw_limit_user_group));
+                        if (empty(array_intersect($info->group, $limit_user_groups))) {
+                            abort(403, 'You\'re not allowed to use this service.');
+                        }
+                    }
 
-                if ($raw_limit_user_group) {
-                    $limit_user_groups = array_merge($admin_groups, explode(',', $raw_limit_user_group));
-                    if (empty(array_intersect($info->group, $limit_user_groups))) {
-                        abort(403, 'You\'re not allowed to use this service.');
+                    $user->role = UserHelper::$USER_ROLES['default'];
+                } else {
+                    // make user admin!
+                    $user->role = UserHelper::$USER_ROLES['admin'];
+                }
+            }
+
+            if (strpos($user->limit_prefix, '!') !== 0) {
+                $user->limit_prefix = '';
+                $raw_group_limit_prefix = env('OPENID_CONNECT_GROUP_LIMIT_PREFIX');
+                if ($raw_group_limit_prefix && $user->role != UserHelper::$USER_ROLES['admin']) {
+                    foreach(explode(',', $raw_group_limit_prefix) as $prefix_set) {
+                        list($prefix_set_group, $prefix_set_prefix) = explode(':', $prefix_set);
+                        if (in_array($prefix_set_group, $info->group)) {
+                            $user->limit_prefix = $prefix_set_prefix;
+                            break;
+                        }
                     }
                 }
-
-                $user->role = UserHelper::$USER_ROLES['default'];
-            } else {
-                // make user admin!
-                $user->role = UserHelper::$USER_ROLES['admin'];
             }
-            $user->save();
         }
+
+        $user->save();
 
         // we're logged in!
         $request->session()->put('username', $user->username);
         $request->session()->put('role', $user->role);
+        $request->session()->put('limit_prefix', $user->limit_prefix);
 
         return redirect()->route('index');
     }
