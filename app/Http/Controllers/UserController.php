@@ -89,15 +89,15 @@ class UserController extends Controller {
 
         $user->email = $info->email;
 
-        $raw_admin_group = env('OPENID_CONNECT_ADMIN_GROUP') || '';
-        $raw_limit_user_group = env('OPENID_CONNECT_LIMIT_USER_GROUP') || '';
+        $raw_admin_group = env('OPENID_CONNECT_ADMIN_GROUP') ?: '';
+        $raw_limit_user_group = env('OPENID_CONNECT_LIMIT_USER_GROUP') ?: '';
 
         if (isset($info->group) && ($raw_admin_group || $raw_limit_user_group)) {
             $admin_groups = explode(',', $raw_admin_group);
 
             if (empty(array_intersect($info->group, $admin_groups))) {
 
-                if ($raw_limit_user_group)) {
+                if ($raw_limit_user_group) {
                     $limit_user_groups = array_merge($admin_groups, explode(',', $raw_limit_user_group));
                     if (empty(array_intersect($info->group, $limit_user_groups))) {
                         abort(403, 'You\'re not allowed to use this service.');
