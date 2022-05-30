@@ -34,12 +34,8 @@ class LinkHelper {
     }
 
     static public function linkBlacklist($link_ending) {
-        $raw_blacklist = env('SHORTLINK_BLACKLIST');
-        if ($raw_blacklist) {
-            return in_array($link_ending, explode(',', $raw_blacklist));
-        } else {
-            return false;
-        }
+        $default_blacklist = 'admin,api,login,shorten,';
+        return in_array($link_ending, explode(',', $default_blacklist . env('SHORTLINK_BLACKLIST')));
     }
 
     static public function linkExists($link_ending) {
