@@ -94,6 +94,14 @@ class UserController extends Controller {
             $admin_groups = explode(',', env('OPENID_CONNECT_ADMIN_GROUP'));
 
             if (empty(array_intersect($info->group, $admin_groups))) {
+
+                if (env('OPENID_CONNECT_LIMIT_USER_GROUP')) {
+                    $limit_user_groups = array_merge($admin_groups, explode(',', env('OPENID_CONNECT_LIMIT_USER_GROUP')));
+                    if (empty(array_intersect($info->group, $limit_user_groups))) {
+                        abort(403, 'You\'re not allowed to use this service.');
+                    }
+                }
+
                 $user->role = UserHelper::$USER_ROLES['default'];
             } else {
                 // make user admin!
