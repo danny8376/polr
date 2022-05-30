@@ -23,6 +23,7 @@ class AjaxController extends Controller {
         }
         else if (LinkHelper::linkBlacklist($link_ending)) {
             return "unavailable";
+        }
         else if (LinkHelper::linkExists($link_ending)) {
             // if ending already exists
             return "unavailable";
